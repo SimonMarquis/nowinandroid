@@ -40,7 +40,7 @@ jobs:
         run: ./gradlew lintDemoDebug
 
       - name: Build all build type and flavor permutations
-        run: ./gradlew assemble
+        run: ./gradlew assemble --no-configuration-cache --no-build-cache
 
       - name: Run local tests
         run: ./gradlew testDemoDebug testProdDebug

@@ -39,8 +39,11 @@ jobs:
       - name: Check lint
         run: ./gradlew lintDemoDebug
 
+      - name: Delete database/build
+        run: rm -rf core/database/build
+
       - name: Build all build type and flavor permutations
-        run: ./gradlew assemble --no-configuration-cache --no-build-cache
+        run: ./gradlew assemble --no-configuration-cache --no-build-cache --rerun-tasks
 
       - name: Run local tests
         run: ./gradlew testDemoDebug testProdDebug

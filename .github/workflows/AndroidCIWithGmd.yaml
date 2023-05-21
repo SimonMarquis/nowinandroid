@@ -20,7 +20,7 @@ jobs:
       - uses: gradle/gradle-build-action@v2
 
       - name: Setup Android SDK
-        run: echo "ok"
+        run: yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --licenses
 
       - name: Build AndroidTest apps
         run: ./gradlew packageDemoDebug packageDemoDebugAndroidTest

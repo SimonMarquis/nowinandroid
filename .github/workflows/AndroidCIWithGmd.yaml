@@ -20,7 +20,7 @@ jobs:
       - uses: gradle/gradle-build-action@v2
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        run: echo "ok"
 
       - name: Build AndroidTest apps
         run: ./gradlew packageDemoDebug packageDemoDebugAndroidTest

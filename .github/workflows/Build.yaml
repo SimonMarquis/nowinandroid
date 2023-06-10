@@ -15,7 +15,9 @@ jobs:
   androidTest-GMD:
     runs-on: macOS-latest # enables hardware acceleration in the virtual machine
     timeout-minutes: 55
-
+    strategy:
+      matrix:
+        iteration: [1, 2, 3]
     steps:
       - name: Checkout
         uses: actions/checkout@v3

@@ -15,6 +15,7 @@ jobs:
     runs-on: macOS-latest # enables hardware acceleration in the virtual machine
     timeout-minutes: 55
     strategy:
+      fail-fast: false
       matrix:
         iteration: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 

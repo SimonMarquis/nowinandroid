@@ -38,6 +38,9 @@ jobs:
       - name: Accept Android licenses
         run: yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
+      - name: Install system image
+        run: "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager system-images;android-31;aosp_atd;x86_64
+
       - name: Build AndroidTest apps
         run: ./gradlew packageDemoDebug packageDemoDebugAndroidTest
 

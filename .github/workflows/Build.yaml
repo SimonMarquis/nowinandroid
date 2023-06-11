@@ -39,7 +39,7 @@ jobs:
         run: yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: List system images
-        run: "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --list | grep atd | cut -d ' ' -f 3
+        run: "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --list | grep atd | cut -d " " -f 3
 
       - name: Install system image
         run: "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager "system-images;android-31;aosp_atd;x86_64"

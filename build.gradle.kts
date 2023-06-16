@@ -41,4 +41,5 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.roborazzi) apply false
     alias(libs.plugins.secrets) apply false
+    id("com.autonomousapps.dependency-analysis") version "1.22.0"
 }

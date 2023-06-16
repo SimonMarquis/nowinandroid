@@ -47,7 +47,8 @@ internal fun Project.configureAndroidCompose(
 
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + buildComposeMetricsParameters()
+            freeCompilerArgs = freeCompilerArgs + buildComposeMetricsParameters() +
+                listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=1.8.22")
         }
     }
 }

@@ -75,7 +75,7 @@ class NavigationScreenshotTests() {
         }
         composeTestRule.onRoot()
             .captureRoboImage(
-                "src/test/screenshots/Navigation" +
+                "src/testDebug/screenshots/Navigation" +
                     "/Navigation_fontScale2.png",
                 roborazziOptions = DefaultRoborazziOptions,
             )

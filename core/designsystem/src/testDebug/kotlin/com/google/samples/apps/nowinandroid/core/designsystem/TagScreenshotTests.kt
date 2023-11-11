@@ -17,12 +17,14 @@
 package com.google.samples.apps.nowinandroid.core.designsystem
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaLoadingWheel
-import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaOverlayLoadingWheel
+import com.google.accompanist.testharness.TestHarness
+import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaTopicTag
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
 import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiTheme
@@ -39,45 +41,39 @@ import org.robolectric.annotation.LooperMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(application = HiltTestApplication::class, sdk = [33], qualifiers = "480dpi")
 @LooperMode(LooperMode.Mode.PAUSED)
-class LoadingWheelScreenshotTests() {
+class TagScreenshotTests() {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun loadingWheel_multipleThemes() {
-        composeTestRule.captureMultiTheme("LoadingWheel") {
-            Surface {
-                NiaLoadingWheel(contentDesc = "test")
+    fun Tag_multipleThemes() {
+        composeTestRule.captureMultiTheme("Tag") {
+            NiaTopicTag(followed = true, onClick = {}) {
+                Text("TOPIC")
             }
         }
     }
 
     @Test
-    fun overlayLoadingWheel_multipleThemes() {
-        composeTestRule.captureMultiTheme("LoadingWheel", "OverlayLoadingWheel") {
-            Surface {
-                NiaOverlayLoadingWheel(contentDesc = "test")
-            }
-        }
-    }
-
-    @Test
-    fun loadingWheelAnimation() {
-        composeTestRule.mainClock.autoAdvance = false
+    fun tag_hugeFont() {
         composeTestRule.setContent {
-            NiaTheme() {
-                NiaLoadingWheel(contentDesc = "")
+            CompositionLocalProvider(
+                LocalInspectionMode provides true,
+            ) {
+                TestHarness(fontScale = 2f) {
+                    NiaTheme {
+                        NiaTopicTag(followed = true, onClick = {}) {
+                            Text("LOOOOONG TOPIC")
+                        }
+                    }
+                }
             }
         }
-        // Try multiple frames of the animation; some arbitrary, some synchronized with duration.
-        listOf(20L, 115L, 724L, 1000L).forEach { deltaTime ->
-            composeTestRule.mainClock.advanceTimeBy(deltaTime)
-            composeTestRule.onRoot()
-                .captureRoboImage(
-                    "src/test/screenshots/LoadingWheel/LoadingWheel_animation_$deltaTime.png",
-                    roborazziOptions = DefaultRoborazziOptions,
-                )
-        }
+        composeTestRule.onRoot()
+            .captureRoboImage(
+                "src/testDebug/screenshots/Tag/Tag_fontScale2.png",
+                roborazziOptions = DefaultRoborazziOptions,
+            )
     }
 }

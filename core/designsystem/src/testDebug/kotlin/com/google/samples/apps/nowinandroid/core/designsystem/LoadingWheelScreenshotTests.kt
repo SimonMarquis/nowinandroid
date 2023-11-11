@@ -16,18 +16,13 @@
 
 package com.google.samples.apps.nowinandroid.core.designsystem
 
-import android.R.string
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.material3.Surface
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.google.accompanist.testharness.TestHarness
-import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaTopAppBar
-import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
+import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaLoadingWheel
+import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaOverlayLoadingWheel
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
 import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiTheme
@@ -40,51 +35,49 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.annotation.LooperMode
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(application = HiltTestApplication::class, sdk = [33], qualifiers = "480dpi")
 @LooperMode(LooperMode.Mode.PAUSED)
-class TopAppBarScreenshotTests() {
+class LoadingWheelScreenshotTests() {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun topAppBar_multipleThemes() {
-        composeTestRule.captureMultiTheme("TopAppBar") {
-            NiaTopAppBarExample()
+    fun loadingWheel_multipleThemes() {
+        composeTestRule.captureMultiTheme("LoadingWheel") {
+            Surface {
+                NiaLoadingWheel(contentDesc = "test")
+            }
         }
     }
 
     @Test
-    fun topAppBar_hugeFont() {
-        composeTestRule.setContent {
-            CompositionLocalProvider(
-                LocalInspectionMode provides true,
-            ) {
-                TestHarness(fontScale = 2f) {
-                    NiaTheme {
-                        NiaTopAppBarExample()
-                    }
-                }
+    fun overlayLoadingWheel_multipleThemes() {
+        composeTestRule.captureMultiTheme("LoadingWheel", "OverlayLoadingWheel") {
+            Surface {
+                NiaOverlayLoadingWheel(contentDesc = "test")
             }
         }
-        composeTestRule.onRoot()
-            .captureRoboImage(
-                "src/test/screenshots/TopAppBar/TopAppBar_fontScale2.png",
-                roborazziOptions = DefaultRoborazziOptions,
-            )
     }
 
-    @Composable
-    private fun NiaTopAppBarExample() {
-        NiaTopAppBar(
-            titleRes = android.R.string.untitled,
-            navigationIcon = NiaIcons.Search,
-            navigationIconContentDescription = "Navigation icon",
-            actionIcon = NiaIcons.MoreVert,
-            actionIconContentDescription = "Action icon",
-        )
+    @Test
+    fun loadingWheelAnimation() {
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.setContent {
+            NiaTheme() {
+                NiaLoadingWheel(contentDesc = "")
+            }
+        }
+        // Try multiple frames of the animation; some arbitrary, some synchronized with duration.
+        listOf(20L, 115L, 724L, 1000L).forEach { deltaTime ->
+            composeTestRule.mainClock.advanceTimeBy(deltaTime)
+            composeTestRule.onRoot()
+                .captureRoboImage(
+                    "src/testDebug/screenshots/LoadingWheel/LoadingWheel_animation_$deltaTime.png",
+                    roborazziOptions = DefaultRoborazziOptions,
+                )
+        }
     }
 }

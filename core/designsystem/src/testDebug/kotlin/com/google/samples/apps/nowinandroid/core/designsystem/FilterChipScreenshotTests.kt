@@ -91,7 +91,7 @@ class FilterChipScreenshotTests() {
         }
         composeTestRule.onRoot()
             .captureRoboImage(
-                "src/test/screenshots/FilterChip/FilterChip_fontScale2.png",
+                "src/testDebug/screenshots/FilterChip/FilterChip_fontScale2.png",
                 roborazziOptions = DefaultRoborazziOptions,
             )
     }

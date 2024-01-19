@@ -230,9 +230,6 @@ jobs:
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
 
-      - name: Build projects before running emulator
-        run: ./gradlew packageDemoDebugAndroidTest
-
       - name: Run FTL instrumented tests
         run: ./gradlew ftlDeviceDemoDebugAndroidTest
 

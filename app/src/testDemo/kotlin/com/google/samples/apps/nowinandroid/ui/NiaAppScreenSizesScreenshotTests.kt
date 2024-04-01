@@ -122,13 +122,18 @@ class NiaAppScreenSizesScreenshotTests {
 
         hiltRule.inject()
 
-        // Configure user data
-        runBlocking {
-            userDataRepository.setShouldHideOnboarding(true)
+        try {
+            // Configure user data
+            runBlocking {
+                userDataRepository.setShouldHideOnboarding(true)
 
-            userDataRepository.setFollowedTopicIds(
-                setOf(topicsRepository.getTopics().first().first().id),
-            )
+                userDataRepository.setFollowedTopicIds(
+                    setOf(topicsRepository.getTopics().first().first().id),
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
         }
     }
 

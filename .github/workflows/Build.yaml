@@ -76,7 +76,7 @@ jobs:
       - name: Run all local screenshot tests (Roborazzi)
         id: screenshotsverify
         continue-on-error: true
-        run: ./gradlew verifyRoborazziDemoDebug
+        run: ./gradlew verifyRoborazziDemoDebug --stacktrace
 
       - name: Prevent pushing new screenshots if this is a fork
         id: checkfork_screenshots
@@ -85,12 +85,19 @@ jobs:
         run: |
           echo "::error::Screenshot tests failed, please create a PR in your fork first." && exit 1
 
+      - name: Upload screenshots outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: roborazzi-screenshots
+          path: '**/build/outputs/roborazzi/*.png'
+
       # Runs if previous job failed
       - name: Generate new screenshots if verification failed and it's a PR
         id: screenshotsrecord
         if: steps.screenshotsverify.outcome == 'failure' && github.event_name == 'pull_request'
         run: |
-          ./gradlew recordRoborazziDemoDebug
+          ./gradlew recordRoborazziDemoDebug --stacktrace
 
       - name: Push new screenshots if available
         uses: stefanzweifel/git-auto-commit-action@v5

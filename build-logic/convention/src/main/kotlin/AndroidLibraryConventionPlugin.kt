@@ -24,9 +24,15 @@ import com.google.samples.apps.nowinandroid.disableUnnecessaryAndroidTests
 import com.google.samples.apps.nowinandroid.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.kotlin
+import org.gradle.kotlin.dsl.withType
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -55,6 +61,16 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 add("testImplementation", kotlin("test"))
 
                 add("implementation", libs.findLibrary("androidx.tracing.ktx").get())
+            }
+            tasks.withType<Test>().configureEach {
+                testLogging {
+                    events = setOf(SKIPPED, PASSED, FAILED)
+                    showCauses = true
+                    showExceptions = true
+                    showStackTraces = true
+                    showStandardStreams = true
+                    exceptionFormat = FULL
+                }
             }
         }
     }

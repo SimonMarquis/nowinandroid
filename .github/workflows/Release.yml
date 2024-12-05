@@ -5,6 +5,9 @@ on:
     tags:
     - 'v*'
 
+env:
+  GRADLE_ENCRYPTION_KEY: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
 jobs:
   build:
     runs-on: ubuntu-latest

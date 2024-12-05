@@ -4,6 +4,9 @@ on:
   schedule:
     - cron:  '42 4 * * *'
 
+env:
+  GRADLE_ENCRYPTION_KEY: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
 jobs:
   baseline_profiles:
     name: "Generate Baseline Profiles"

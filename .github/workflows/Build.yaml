@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+env:
+  GRADLE_ENCRYPTION_KEY: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true

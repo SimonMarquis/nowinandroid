@@ -141,7 +141,7 @@ jobs:
           path: '**/build/outputs/roborazzi/*_compare.png'
 
       - name: Check lint
-        run: ./gradlew :app:lintProdRelease :app-nia-catalog:lintRelease :lint:lint :build-logic:lint
+        run: ./gradlew :app:lintProdRelease :app-nia-catalog:lintRelease :lint:lint :convention:lint
 
       - name: Upload lint reports (HTML)
         if: ${{ !cancelled() }}

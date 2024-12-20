@@ -1,0 +1,71 @@
+name: Testing
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: testing-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wip:
+    name: WIP
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      security-events: write
+
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls /dev/kvm
+
+      - name: Copy CI gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Accept licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Accept licenses
+        run: yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Setup GMD
+        run: ./gradlew :benchmarks:pixel6Api33Setup
+          --info
+          -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true
+          -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
+
+      # This generates both baseline and startup profile and adds them into the generated folder
+      - name: Generate Baseline Profile
+        run: ./gradlew :app:generateReleaseBaselineProfile
+          -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=baselineprofile
+          -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
+          --stacktrace
+
+      - name: Build release variant including baseline profile generation
+        run: ./gradlew :app:assembleDemoRelease
+          -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile
+          -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
+          -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true
+          -Pandroid.experimental.androidTest.numManagedDeviceShards=1
+          -Pandroid.experimental.testOptions.managedDevices.maxConcurrentDevices=1

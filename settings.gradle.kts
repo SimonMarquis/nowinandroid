@@ -42,6 +42,22 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+plugins {
+   id("com.gradle.develocity") version "3.19"
+    id("com.gradle.common-custom-user-data-gradle-plugin") version "2.0.2"
+}
+
+develocity {
+    buildScan {
+        termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
+        termsOfUseAgree.set("yes")
+        publishAlways()
+        uploadInBackground.set(false)
+    }
+}
+
+
 rootProject.name = "nowinandroid"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

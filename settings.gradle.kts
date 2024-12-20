@@ -52,7 +52,7 @@ develocity {
     buildScan {
         termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
         termsOfUseAgree.set("yes")
-        publishAlways()
+        publishing.onlyIf { true }
         uploadInBackground.set(false)
     }
 }
